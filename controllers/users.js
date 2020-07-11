@@ -1,6 +1,11 @@
 const User = require("../models/User").model;
 
+const defaultWorkspace = require("../configs/UserDefault/workspace");
+
 exports.createUser = (req, res) => {
+	//Default Worspacce
+	if (!req.body.hasOwnProperty("workspace")) req.body.workspace = defaultWorkspace;
+
 	const user = new User(req.body);
 	user
 		.save()

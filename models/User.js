@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
 
-const TaskSchema = require("./Task").schema;
-const ProjectSchema = require("./Project").schema;
-const CategorySchema = require("./Category").schema;
+const WorkspaceSchema = require("./Workspace").schema;
+
+
 
 exports.schema = mongoose.Schema(
 	{
@@ -13,13 +13,13 @@ exports.schema = mongoose.Schema(
 		lastname: {
 			type: String,
 			required: true,
-			default: false,
 		},
 		// Need setter for lower case
 		email: {
 			type: String,
 			required: true,
 			unique: true,
+			set: (v) => v.toLowerCase(),
 		},
 		password: {
 			type: String,
@@ -27,14 +27,10 @@ exports.schema = mongoose.Schema(
 			//Prévent Hash password from behing visible in querries
 			select: false,
 		},
+		//We doesnt need default we will do the midleware inside the controller
 		workspace: {
-			type: {
-				categories: [CategorySchema],
-				projects: [ProjectSchema],
-				tasks: [TaskSchema],
-      },
-      required: true,
-			default: {},
+			type: WorkspaceSchema,
+			required: true,
 		},
 	},
 	{
