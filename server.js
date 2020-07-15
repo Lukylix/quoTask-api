@@ -15,7 +15,7 @@ app.get("/", (req, res) => {
 	res.status(302).json("Welcome to our api");
 });
 
-//Middleware for routes that start with user our users
+//Middleware for routes that start with user or users
 app.use("/users", require("./routes/users"));
 app.use("/user", require("./routes/users"));
 

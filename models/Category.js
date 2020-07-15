@@ -1,27 +1,30 @@
 const mongoose = require("mongoose");
 
+const subSchemaBuilder = require("../utils/subSchemaBuilder");
+
 const ColorSchema = require("./Color").schema;
 const ProjectSchema = require("./Project").schema;
 const TaskSchema = require("./Task").schema;
 
-const getTreeLevel = (v) => {
-	const parent = this.parent();
-	return parent.hasOwnProperty("subCategories") ? parent.treeLevel + 1 : 0;
-};
-
-exports.schema = mongoose.Schema({
-	name: {
-		type: String,
-		required: true,
+exports.schema = subSchemaBuilder(
+	{
+		name: {
+			type: String,
+			required: true,
+		},
+		color: ColorSchema,
+		//Overwrited by our custom function
+		subCategories: [this],
+		projects: [ProjectSchema],
+		tasks: [TaskSchema],
 	},
-	treeLevel: {
-		type: Number,
-		default: 0,
-	},
-	color: ColorSchema,
-	subCategories: [this],
-	projects: [ProjectSchema],
-	tasks: [TaskSchema],
-});
+	//Mongoose schema options
+	{},
+	//Custom options
+	{
+		propertyName: "subCategories",
+		treeLimit: 5,
+	}
+);
 
 exports.model = mongoose.model("Category", exports.schema);

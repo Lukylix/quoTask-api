@@ -1,8 +1,7 @@
 const mongoose = require("mongoose");
-
-//Need endedAt
-//and modules discrimators
-exports.schema = mongoose.Schema(
+const subSchemaBuilder = require("../utils/subSchemaBuilder");
+// TODO  endedAt / doneAt
+exports.schema = subSchemaBuilder(
 	{
 		name: {
 			type: String,
@@ -12,15 +11,17 @@ exports.schema = mongoose.Schema(
 			type: Boolean,
 			default: false,
 		},
-		treeLevel: {
-			type: Number,
-			default: 0,
-		},
+		//Overwrited by our custom function
 		subTasks: [this],
 	},
 	{
 		//Let moogoose manage timestamps
 		timestamps: true,
+	},
+	//Custom options
+	{
+		propertyName: "subTasks",
+		treeLimit: 3,
 	}
 );
 

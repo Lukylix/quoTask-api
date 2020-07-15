@@ -16,17 +16,19 @@ exports.schema = mongoose.Schema(
 			type: Boolean,
 			default: false,
 		},
-		treeLevel: {
-			type: Number,
-			default: 0,
-		},
 		color: ColorSchema,
+		//Overwrited by our custom function
 		subProjects: [this],
 		tasks: [TaskSchema],
 	},
 	{
 		//Let moogoose manage timestamps
 		timestamps: true,
+	},
+	//Custom options
+	{
+		propertyName: "subProjects",
+		treeLimit: 3,
 	}
 );
 

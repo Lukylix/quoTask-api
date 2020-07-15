@@ -3,8 +3,8 @@ const User = require("../models/User").model;
 const defaultWorkspace = require("../configs/UserDefault/workspace");
 
 exports.createUser = (req, res) => {
-	//Default Worspacce
-	if (!req.body.hasOwnProperty("workspace")) req.body.workspace = defaultWorkspace;
+	//Add Default Workspace if not include in req
+	if (!("workspace" in req.body)) req.body.workspace = defaultWorkspace;
 
 	const user = new User(req.body);
 	user
