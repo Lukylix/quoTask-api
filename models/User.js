@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
 
-const WorkspaceSchema = require("./Workspace").schema;
-
 exports.schema = mongoose.Schema(
 	{
 		firstname: {
@@ -16,18 +14,21 @@ exports.schema = mongoose.Schema(
 		email: {
 			type: String,
 			required: true,
+			// Mark as optional in mongoose doc but wont pick it up
+			index: true,
 			unique: true,
 			set: (v) => v.toLowerCase(),
 		},
 		password: {
 			type: String,
 			required: true,
-			//Prévent Hash password from behing visible in querries
+			// Pravent Hash password from behing visible in querries by default
 			select: false,
 		},
 		//We doesnt need default we will do the midleware inside the controller
 		workspace: {
-			type: WorkspaceSchema,
+			type: mongoose.Schema.ObjectId, 
+			ref: 'Workspace',
 			required: true,
 		},
 	},

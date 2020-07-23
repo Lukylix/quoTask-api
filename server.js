@@ -19,6 +19,8 @@ app.get("/", (req, res) => {
 app.use("/users", require("./routes/users"));
 app.use("/user", require("./routes/users"));
 
+app.use("/workspace", require("./routes/workspaces"));
+
 app.listen(port, hostname, () => {
 	console.log(`Server running at http://${hostname}:${port}/`);
 });
