@@ -1,5 +1,6 @@
 const Workspace = require("../models/Workspace").model;
 const mongoose = require("mongoose");
+// TODO  need creation and possibly precise get
 
 exports.updateChild = (req, res) => {
 	const { $setArray, arrayFilters } = preparePath(req, res);
@@ -38,14 +39,65 @@ exports.updateChild = (req, res) => {
 	);
 };
 
-function preparePath(req, res) {
+exports.deleteChild = (req, res) => {
+	const { childPath, arrayFilters, target_id } = preparePath(req, res, true);
+	if (!childPath) return;
+	Workspace.updateOne(
+		{ _id: req.params.workspace_id },
+		{
+			$pull: { [childPath]: { _id: mongoose.Types.ObjectId(target_id) } },
+		},
+		{
+			arrayFilters: arrayFilters,
+			omitUndefined: true,
+			multi: false,
+		},
+		(err, result) => {
+			if (err) {
+				//Status code 500  (Internal Server Error)
+				res.status(500).json({
+					message: "Internal Server Error",
+					err,
+				});
+				//Number of document modified
+			} else if (result.nModified > 0) {
+				res.status(200).json({
+					message: "Child deleted",
+					result,
+				});
+			} else {
+				res.status(404).json({
+					message: "Not Found",
+					result: result,
+				});
+			}
+		}
+	);
+};
+
+function preparePath(req, res, isDelete = false) {
 	const arrayIds = getPathIds(req, res);
 	if (!arrayIds) return false;
 
 	//Match all ids including "[" and "]" but not empty ones "[]"
 	const regexPathId = /\[(?<=\[)([^\[\]]+?)(?=\])\]/g;
 	// splitPath = [ 'categories', '$[]', 'tasks', '$' ]
-	const splitPath = req.body.path.replace(regexPathId, ".$").replace(/\[\]/g, ".$[]").split(".");
+	let splitPath = req.body.path.replace(regexPathId, ".$").replace(/\[\]/g, ".$[]").split(".");
+
+	// Remove the last element ($pull need to point to an array)
+	if (isDelete) {
+		if (splitPath[splitPath.length - 1] !== "$") {
+			res.status(400).json({
+				message: "path must end with a direct child of an array",
+				exemples: {
+					path: "categories[].tasks[5f16a6adc048c15d3d1889df]",
+					alternative: "categories[5f16a5e17c284c5c6d9a6f95].tasks[5f16a6adc048c15d3d1889df]",
+				},
+			});
+			return false;
+		}
+		splitPath.pop();
+	}
 
 	let id_index = 0;
 	let arrayFilters = [];
@@ -61,6 +113,14 @@ function preparePath(req, res) {
 	});
 	const childPath = splitPath.join(".");
 
+	// In delete mode we doesn't need $setArray
+	if (isDelete)
+		return {
+			arrayFilters: arrayFilters,
+			childPath: childPath,
+			target_id: arrayIds[arrayIds.length - 1],
+		};
+
 	delete req.body.path;
 	delete req.body._id;
 	// Prepare a precise path for $set $pull ect
@@ -70,7 +130,7 @@ function preparePath(req, res) {
 	for (key in req.body)
 		if (!Array.isArray(req.body[key])) $setArray[`${childPath}.${key}`] = req.body[key];
 
-	return { $setArray: $setArray, arrayFilters: arrayFilters, childPath: childPath };
+	return { $setArray: $setArray, arrayFilters: arrayFilters };
 }
 
 function getPathIds(req, res) {

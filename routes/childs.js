@@ -13,11 +13,9 @@ const childsController = require("../controllers/childs");
 // router.get("/", childsController.getChild);
 
 //Delete a child
-// router.delete("/:id", childsController.deleteChild);
+router.delete("/:workspace_id", childsController.deleteChild);
 
 //update
 router.put("/:workspace_id", childsController.updateChild);
 
 module.exports = router;
-
-
