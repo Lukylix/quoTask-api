@@ -4,10 +4,7 @@ const router = express.Router();
 const childsController = require("../controllers/childs");
 
 //Create
-// router.post("/", childsController.createChild);
-
-//Get All childs
-// router.get("/", childsController.getChilds);
+router.post("/:workspace_id", childsController.createChild);
 
 //Get a child
 // router.get("/", childsController.getChild);

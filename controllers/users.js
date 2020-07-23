@@ -74,6 +74,7 @@ exports.getUser = (req, res) => {
 		});
 };
 
+// TODO Delete the related workspace
 exports.deleteUser = (req, res) => {
 	User.deleteOne({ _id: req.params.id })
 		.then((result) => {
