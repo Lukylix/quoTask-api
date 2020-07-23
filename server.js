@@ -21,6 +21,9 @@ app.use("/user", require("./routes/users"));
 
 app.use("/workspace", require("./routes/workspaces"));
 
+app.use("/child", require("./routes/childs"));
+app.use("/childs", require("./routes/childs"));
+
 app.listen(port, hostname, () => {
 	console.log(`Server running at http://${hostname}:${port}/`);
 });
