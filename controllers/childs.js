@@ -41,7 +41,7 @@ exports.createChild = (req, res) => {
 };
 
 exports.updateChild = (req, res) => {
-	const { $setArray, arrayFilters } = preparePath(req, res, true);
+	const { $setArray, arrayFilters } = preparePath(req, res);
 	// if prepare fail we doesn't wont to run a bad querry
 	if (!$setArray) return;
 	Workspace.updateOne(
