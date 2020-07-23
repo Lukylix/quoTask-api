@@ -1,20 +1,36 @@
+const mongoose = require("mongoose");
 const User = require("../models/User").model;
+const Workspace = require("../models/Workspace").model;
 
 const defaultWorkspace = require("../configs/UserDefault/workspace");
 
 exports.createUser = (req, res) => {
 	//Add Default Workspace if not include in req
 	if (!("workspace" in req.body)) req.body.workspace = defaultWorkspace;
+	const workspace = new Workspace({ ...req.body.workspace, _id: new mongoose.Types.ObjectId() });
 
-	const user = new User(req.body);
-	user
+	workspace
 		.save()
-		.then((user) => {
-			//Status code 201 (Created)
-			res.status(201).json({
-				message: "User created!",
-				user: user,
-			});
+		.then((workspace) => {
+			req.body.workspace_id = workspace._id;
+			const user = new User(req.body);
+			user
+				.save()
+				.then((user) => {
+					//Status code 201 (Created)
+					res.status(201).json({
+						message: "User created!",
+						user: user,
+						workspace: workspace,
+					});
+				})
+				.catch((err) => {
+					//Status code 400 (Bad Request)
+					res.status(400).json({
+						message: "Bad request",
+						err,
+					});
+				});
 		})
 		.catch((err) => {
 			//Status code 400 (Bad Request)
