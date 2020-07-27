@@ -1,12 +1,12 @@
 const mongoose = require("mongoose");
-const { Schema } = require("mongoose");
+const subSchemaBuilder = require("../utils/subSchemaBuilder");
 
 const ColorSchema = require("./Task").schema;
 const TaskSchema = require("./Task").schema;
 
 //Need endedAt
 //and modules discrimators
-exports.schema = mongoose.Schema(
+exports.schema = subSchemaBuilder(
 	{
 		name: {
 			type: String,
