@@ -30,4 +30,8 @@ app.use("/workspace?s", require("./routes/workspaces"));
 
 app.use("/child?s", require("./routes/childs"));
 
+app.use((req, res) => {
+	res.status(404).json({ message: "Page not found" });
+});
+
 module.exports = app;
