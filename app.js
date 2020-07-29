@@ -10,8 +10,7 @@ app.use(express.json());
 
 // Validate Json
 app.use((err, req, res, next) => {
-	if (err) res.status(400).send({ message: "Invalid JSON !!" });
-	next();
+	if (err) res.status(400).send({ message: "Json parsing error" });
 });
 
 app.get("/", (req, res) => {

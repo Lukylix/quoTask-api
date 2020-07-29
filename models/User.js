@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
+// TODO Email verification
 const userShema = new mongoose.Schema(
 	{
 		firstname: {

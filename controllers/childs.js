@@ -32,7 +32,7 @@ exports.createChild = (req, res) => {
 				});
 			} else {
 				res.status(404).json({
-					message: "Fail",
+					message: "Not found",
 					result: result,
 				});
 			}
@@ -67,9 +67,10 @@ exports.updateChild = (req, res) => {
 					result,
 				});
 			} else {
-				res.status(404).json({
+				// Accepted 
+				res.status(200).json({
 					message: "Nothing to update",
-					result: result,
+					result
 				});
 			}
 		}
