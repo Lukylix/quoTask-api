@@ -11,6 +11,7 @@ app.use(express.json());
 // Validate Json
 app.use((err, req, res, next) => {
 	if (err) res.status(400).send({ message: "Json parsing error" });
+	// Next is called by default if present on top
 });
 
 app.get("/", (req, res) => {
@@ -24,11 +25,11 @@ app.use("/login", require("./routes/login"));
 app.use(require("./controllers/login").verify);
 
 //Middleware for routes that start with user or users
-app.use("/user?s", require("./routes/users"));
+app.use("/users?", require("./routes/users"));
 
-app.use("/workspace?s", require("./routes/workspaces"));
+app.use("/workspaces?", require("./routes/workspaces"));
 
-app.use("/child?s", require("./routes/childs"));
+app.use("/childs?", require("./routes/childs"));
 
 app.use((req, res) => {
 	res.status(404).json({ message: "Page not found" });
