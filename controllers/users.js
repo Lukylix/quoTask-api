@@ -12,7 +12,7 @@ exports.createUser = (req, res) => {
 	workspace
 		.save()
 		.then((workspace) => {
-			req.body.workspace_id = workspace._id;
+			req.body.workspace = workspace._id;
 			const user = new User(req.body);
 			user
 				.save()
@@ -98,11 +98,15 @@ exports.deleteUser = (req, res) => {
 		});
 };
 exports.updateUser = (req, res) => {
+	// Update hook removed we wont update the password this way
+	if ("password" in req.body) delete req.body.password;
+
+	// If this line is modified could result in bypass mongoose update hook
 	User.updateOne({ _id: req.params.id }, req.body, { omitUndefined: true })
 		.then((result) => {
 			//Number of document modified
 			if (result.nModified > 0)
-				res
+				return res
 					.status(200)
 					.json({
 						message: "User updated!",
