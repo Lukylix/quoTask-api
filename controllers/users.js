@@ -14,23 +14,15 @@ exports.createUser = (req, res) => {
 		.then((workspace) => {
 			req.body.workspace = workspace._id;
 			const user = new User(req.body);
-			user
-				.save()
-				.then((user) => {
-					//Status code 201 (Created)
-					res.status(201).json({
-						message: "User created!",
-						user: user,
-						workspace: workspace,
-					});
-				})
-				.catch((err) => {
-					//Status code 400 (Bad Request)
-					res.status(400).json({
-						message: "Bad request",
-						err,
-					});
-				});
+			return user.save();
+		})
+		.then((user) => {
+			//Status code 201 (Created)
+			res.status(201).json({
+				message: "User created!",
+				user: user,
+				workspace: workspace,
+			});
 		})
 		.catch((err) => {
 			//Status code 400 (Bad Request)

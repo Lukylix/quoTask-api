@@ -14,18 +14,13 @@ exports.createChild = (req, res) => {
 			$push: { [childPath]: { ...req.body, _id: target_id } },
 		},
 		{
-			arrayFilters: arrayFilters,
+			arrayFilters,
 			omitUndefined: true,
-		},
-		(err, result) => {
-			if (err) {
-				//Status code 500  (Internal Server Error)
-				res.status(500).json({
-					message: "Internal Server Error",
-					err,
-				});
-				//Number of document modified
-			} else if (result.nModified > 0) {
+		}
+	)
+		.then((result) => {
+			//Number of document modified
+			if (result.nModified > 0) {
 				res.status(200).json({
 					message: "Child added!",
 					result,
@@ -33,11 +28,17 @@ exports.createChild = (req, res) => {
 			} else {
 				res.status(404).json({
 					message: "Not found",
-					result: result,
+					result,
 				});
 			}
-		}
-	);
+		})
+		.catch((err) => {
+			//Status code 500  (Internal Server Error)
+			res.status(500).json({
+				message: "Internal Server Error",
+				err,
+			});
+		});
 };
 
 exports.updateChild = (req, res) => {
@@ -50,31 +51,32 @@ exports.updateChild = (req, res) => {
 			$set: $setArray,
 		},
 		{
-			arrayFilters: arrayFilters,
+			arrayFilters,
 			omitUndefined: true,
-		},
-		(err, result) => {
-			if (err) {
-				//Status code 500  (Internal Server Error)
-				res.status(500).json({
-					message: "Internal Server Error",
-					err,
-				});
-				//Number of document modified
-			} else if (result.nModified > 0) {
-				res.status(200).json({
+		}
+	)
+		.then((result) => {
+			console.log(result);
+			if (result.nModified > 0) {
+				res.status(202).json({
 					message: "Child updated!",
 					result,
 				});
 			} else {
-				// Accepted 
+				// Accepted
 				res.status(200).json({
 					message: "Nothing to update",
-					result
+					result,
 				});
 			}
-		}
-	);
+		})
+		.catch((err) => {
+			//Status code 500  (Internal Server Error)
+			res.status(500).json({
+				message: "Internal Server Error",
+				err,
+			});
+		});
 };
 
 exports.deleteChild = (req, res) => {
@@ -86,19 +88,15 @@ exports.deleteChild = (req, res) => {
 			$pull: { [childPath]: { _id: mongoose.Types.ObjectId(target_id) } },
 		},
 		{
-			arrayFilters: arrayFilters,
+			arrayFilters,
 			omitUndefined: true,
 			multi: false,
-		},
-		(err, result) => {
-			if (err) {
-				//Status code 500  (Internal Server Error)
-				res.status(500).json({
-					message: "Internal Server Error",
-					err,
-				});
-				//Number of document modified
-			} else if (result.nModified > 0) {
+		}
+	)
+		.then((result) => {
+			//Number of document modified
+
+			if (result.nModified > 0) {
 				res.status(200).json({
 					message: "Child deleted",
 					result,
@@ -106,28 +104,28 @@ exports.deleteChild = (req, res) => {
 			} else {
 				res.status(404).json({
 					message: "Not Found",
-					result: result,
+					result,
 				});
 			}
-		}
-	);
+		})
+		.catch((err) => {
+			res.status(500).json({
+				message: "Internal Server Error",
+				err,
+			});
+		});
 };
 
 function preparePath(req, res) {
 	const arrayIds = getPathIds(req, res);
-	let operationType;
-	switch (req.method) {
-		case "POST":
-			operationType = "create";
-			break;
-		case "DELETE":
-			operationType = "delete";
-			break;
-		case "PUT":
-			operationType = "update";
-			break;
-	}
 	if (!arrayIds) return false;
+
+	const dicReqType = {
+		POST: "create",
+		UPDATE: "update",
+		DELETE: "delete",
+	};
+	const operationType = dicReqType[req.method];
 
 	//Match all ids including "[" and "]" but not empty ones "[]"
 	const regexPathId = /\[(?<=\[)([^\[\]]+?)(?=\])\]/g;
@@ -200,8 +198,8 @@ function preparePath(req, res) {
 	// In delete mode we doesn't need $setArray
 	if (operationType != "update")
 		return {
-			arrayFilters: arrayFilters,
-			childPath: childPath,
+			arrayFilters,
+			childPath,
 			target_id: arrayIds[arrayIds.length - 1],
 		};
 
@@ -214,7 +212,7 @@ function preparePath(req, res) {
 	for (key in req.body)
 		if (!Array.isArray(req.body[key])) $setArray[`${childPath}.${key}`] = req.body[key];
 
-	return { $setArray: $setArray, arrayFilters: arrayFilters };
+	return { $setArray, arrayFilter };
 }
 
 function getPathIds(req, res) {
@@ -231,8 +229,7 @@ function getPathIds(req, res) {
 	const regexValidChar = /^([a-zA-Z0-9]|[\[\]\.])+$/;
 	if (!req.body.path.match(regexValidChar)) {
 		res.status(400).json({
-			message:
-				"Bad request, path: can only contain letters, number, dots, and square bracket",
+			message: "Bad request, path: can only contain letters, number, dots, and square bracket",
 			exemples: {
 				path: "categories[].tasks[5f16a6adc048c15d3d1889df]",
 			},

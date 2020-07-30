@@ -1,7 +1,5 @@
 const Workspace = require("../models/Workspace").model;
 
-const defaultWorkspace = require("../configs/UserDefault/workspace");
-
 exports.getWorkspaces = (req, res) => {
 	Workspace.find()
 		.then((workspaces) => {

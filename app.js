@@ -11,7 +11,7 @@ app.use(express.json());
 // Validate Json
 app.use((err, req, res, next) => {
 	if (err) res.status(400).send({ message: "Json parsing error" });
-	// Next is called by default if present on top
+	// Next is called by default if present on args
 });
 
 app.get("/", (req, res) => {
@@ -21,7 +21,7 @@ app.get("/", (req, res) => {
 
 app.use("/login", require("./routes/login"));
 
-// Midfleware that valide auth
+// Middleware thatleware th valide auth
 app.use(require("./controllers/login").verify);
 
 //Middleware for routes that start with user or users
@@ -33,6 +33,11 @@ app.use("/childs?", require("./routes/childs"));
 
 app.use((req, res) => {
 	res.status(404).json({ message: "Page not found" });
+});
+
+// Catching errors
+app.use((err, req, res, next) => {
+	res.status(err.status || 500).json({ message: err.message || err });
 });
 
 module.exports = app;
