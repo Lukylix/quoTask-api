@@ -14,6 +14,7 @@ exports.login = (req, res) => {
 			userDoc.verifyPassword(plainPassword, (err, isValid) => {
 				if (err || !isValid) return res.status(401).json({ message: "Bad password" });
 				const user = userDoc.toObject();
+				// Remove passowrd from token
 				delete user.password;
 
 				const token = jwt.sign(user, process.env.JWT_SECRET);
@@ -39,6 +40,6 @@ exports.verify = (req, res, next) => {
 	jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
 		if (err) return res.status(403).json("Token no longer valid");
 		req.auth = decoded;
-		next();
+		return next();
 	});
 };

@@ -33,6 +33,7 @@ exports.createUser = (req, res) => {
 		});
 };
 
+// Temporarily Disabled (see users route)
 exports.getUsers = (req, res) => {
 	User.find()
 		.then((users) => {
@@ -49,9 +50,9 @@ exports.getUsers = (req, res) => {
 };
 
 exports.getUser = (req, res) => {
-	User.findById(req.params.id)
+	User.findById(req.auth._id)
 		.then((user) => {
-			if (user !== null) res.status(200).json(user).end();
+			if (user !== null) return res.status(200).json(user).end();
 			//Status code 404  (Not Found)
 			res.status(404).json({
 				message: "User Not Found",
@@ -68,15 +69,12 @@ exports.getUser = (req, res) => {
 
 // TODO Delete the related workspace
 exports.deleteUser = (req, res) => {
-	User.deleteOne({ _id: req.params.id })
+	User.deleteOne({ _id: req.auth._id })
 		.then((result) => {
 			if (result.deletedCount > 0)
-				res
-					.status(200)
-					.json({
-						message: "User Deleted!",
-					})
-					.end();
+				return res.status(200).json({
+					message: "User Deleted!",
+				});
 			res.status(404).json({
 				message: "User Not Found",
 			});
@@ -94,7 +92,7 @@ exports.updateUser = (req, res) => {
 	if ("password" in req.body) delete req.body.password;
 
 	// If this line is modified could result in bypass mongoose update hook
-	User.updateOne({ _id: req.params.id }, req.body, { omitUndefined: true })
+	User.updateOne({ _id: req.auth._id }, req.body, { omitUndefined: true })
 		.then((result) => {
 			//Number of document modified
 			if (result.nModified > 0)
@@ -105,6 +103,7 @@ exports.updateUser = (req, res) => {
 						result,
 					})
 					.end();
+
 			res.status(404).json({
 				message: "User Not Found",
 			});

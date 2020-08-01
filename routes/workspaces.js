@@ -4,13 +4,14 @@ const router = express.Router();
 const workspacesController = require("../controllers/workspaces");
 
 // Get All workspaces
-router.get("/", workspacesController.getWorkspaces);
+// Not Needed only for futures admins
+// router.get("/", workspacesController.getWorkspaces);
 
 // Get a workspace
-router.get("/:id", workspacesController.getWorkspace);
+router.get("/", workspacesController.getWorkspace);
 
 // Delete
-router.delete("/:id", workspacesController.deleteWorkspace);
+router.delete("/", workspacesController.deleteWorkspace);
 
 // We doesn't need update workspace
 

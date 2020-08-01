@@ -6,16 +6,20 @@ const usersController = require("../controllers/users");
 //Create
 router.post("/", usersController.createUser);
 
+// Middleware auth validation
+router.use(require("../controllers/login").verify);
+
 //Get All users
-router.get("/", usersController.getUsers);
+// Not Needed only for futures admins
+// router.get("/", usersController.getUsers);
 
 //Get a user
-router.get("/:id", usersController.getUser);
+router.get("/", usersController.getUser);
 
 //Delete a user
-router.delete("/:id", usersController.deleteUser);
+router.delete("/", usersController.deleteUser);
 
 //update
-router.put("/:id", usersController.updateUser);
+router.put("/", usersController.updateUser);
 
 module.exports = router;

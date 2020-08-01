@@ -4,15 +4,16 @@ const router = express.Router();
 const childsController = require("../controllers/childs");
 
 //Create
-router.post("/:workspace_id", childsController.createChild);
+router.post("/", childsController.createChild);
 
 //Get a child
+// TODO
 // router.get("/", childsController.getChild);
 
 //Delete a child
-router.delete("/:workspace_id", childsController.deleteChild);
+router.delete("/", childsController.deleteChild);
 
 //update
-router.put("/:workspace_id", childsController.updateChild);
+router.put("/", childsController.updateChild);
 
 module.exports = router;

@@ -1,5 +1,7 @@
 const Workspace = require("../models/Workspace").model;
 
+
+// Temporarily Disabled (see workspaces route)
 exports.getWorkspaces = (req, res) => {
 	Workspace.find()
 		.then((workspaces) => {
@@ -16,9 +18,9 @@ exports.getWorkspaces = (req, res) => {
 };
 
 exports.getWorkspace = (req, res) => {
-	Workspace.findById(req.params.id)
+	Workspace.findById(req.auth.workspace)
 		.then((workspace) => {
-			if (workspace !== null) res.status(200).json(workspace).end();
+			if (workspace !== null) return res.status(200).json(workspace).end();
 			//Status code 404  (Not Found)
 			res.status(404).json({
 				message: "Workspace Not Found",
@@ -34,10 +36,10 @@ exports.getWorkspace = (req, res) => {
 };
 
 exports.deleteWorkspace = (req, res) => {
-	Workspace.deleteOne({ _id: req.params.id })
+	Workspace.deleteOne({ _id: req.auth.workspace })
 		.then((result) => {
 			if (result.deletedCount > 0)
-				res
+				return res
 					.status(200)
 					.json({
 						message: "Workspace Deleted!",
