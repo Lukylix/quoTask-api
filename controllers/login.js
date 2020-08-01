@@ -35,10 +35,10 @@ exports.verify = (req, res, next) => {
 			? req.headers.authorization.split(" ")[1]
 			: null;
 
-	if (!token) return res.status(401).json("Bearer token needed");
+	if (!token) return res.status(401).json({ message: "Bearer token needed" });
 
 	jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-		if (err) return res.status(403).json("Token no longer valid");
+		if (!decoded) return res.status(403).json({ message: "Token no longer valid" });
 		req.auth = decoded;
 		return next();
 	});
