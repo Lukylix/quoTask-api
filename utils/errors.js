@@ -1,7 +1,7 @@
 // args contain req, res, next
 const errorHandler = (ourFunction) => {
 	return (req, res, next) => {
-		return ourFunction(req, res, next).catch(next);
+		return ourFunction(req, res, next).catch((err) => next(err));
 	};
 };
 
@@ -10,3 +10,5 @@ const unhandledRejection = (reason, promise) => {
 	console.error("Unhandled Rejection at:", promise, "reason:", reason);
 	// TODO Store those errors somewhere
 };
+
+module.exports = errorHandler;

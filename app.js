@@ -1,6 +1,5 @@
 const express = require("express");
 const app = express();
-const jwt = require("jsonwebtoken");
 
 require("dotenv").config();
 require("./configs/mongoose");
@@ -21,11 +20,11 @@ app.get("/", (req, res) => {
 
 app.use("/login", require("./routes/login"));
 
-// Middleware thatleware th valide auth
-app.use(require("./controllers/login").verify);
-
 //Middleware for routes that start with user or users
 app.use("/users?", require("./routes/users"));
+
+// Middleware auth validation
+app.use(require("./controllers/login").verify);
 
 app.use("/workspaces?", require("./routes/workspaces"));
 
@@ -36,8 +35,12 @@ app.use((req, res) => {
 });
 
 // Catching errors
+// err.status never used
 app.use((err, req, res, next) => {
-	res.status(err.status || 500).json({ message: err.message || err });
+	res.status(err.status || 500).json({
+		message: err.message || "Internal Server Error",
+		err,
+	});
 });
 
 module.exports = app;
