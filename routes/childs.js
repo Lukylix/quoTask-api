@@ -1,19 +1,21 @@
 const express = require("express");
 const router = express.Router();
 
+const errorHandler = require("../utils/errors");
+
 const childsController = require("../controllers/childs");
 
 //Create
-router.post("/", childsController.createChild);
+router.post("/", errorHandler(childsController.createChild));
 
 //Get a child
 // TODO
 // router.get("/", childsController.getChild);
 
 //Delete a child
-router.delete("/", childsController.deleteChild);
+router.delete("/", errorHandler(childsController.deleteChild));
 
 //update
-router.put("/", childsController.updateChild);
+router.put("/", errorHandler(childsController.updateChild));
 
 module.exports = router;

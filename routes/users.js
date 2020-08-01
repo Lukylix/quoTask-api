@@ -1,10 +1,12 @@
 const express = require("express");
 const router = express.Router();
 
+const errorHandler = require("../utils/errors");
+
 const usersController = require("../controllers/users");
 
 //Create
-router.post("/", usersController.createUser);
+router.post("/", errorHandler(usersController.createUser));
 
 // Middleware auth validation
 router.use(require("../controllers/login").verify);
@@ -14,12 +16,12 @@ router.use(require("../controllers/login").verify);
 // router.get("/", usersController.getUsers);
 
 //Get a user
-router.get("/", usersController.getUser);
+router.get("/", errorHandler(usersController.getUser));
 
 //Delete a user
-router.delete("/", usersController.deleteUser);
+router.delete("/", errorHandler(usersController.deleteUser));
 
 //update
-router.put("/", usersController.updateUser);
+router.put("/", errorHandler(usersController.updateUser));
 
 module.exports = router;

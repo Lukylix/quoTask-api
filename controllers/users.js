@@ -61,7 +61,7 @@ exports.getUser = (req, res) => {
 		.catch((err) => {
 			//Status code 400 (Bad Request)
 			res.status(400).json({
-				message: "Bad request not valid id",
+				message: "Bad request, invalid id",
 				err,
 			});
 		});
@@ -69,7 +69,7 @@ exports.getUser = (req, res) => {
 
 // TODO Delete the related workspace
 exports.deleteUser = (req, res) => {
-	User.deleteOne({ _id: req.auth._id })
+	return User.deleteOne({ _id: req.auth._id })
 		.then((result) => {
 			if (result.deletedCount > 0)
 				return res.status(200).json({
@@ -79,14 +79,8 @@ exports.deleteUser = (req, res) => {
 				message: "User Not Found",
 			});
 		})
-		.catch((err) => {
-			//Status code 500  (Internal Server Error)
-			res.status(500).json({
-				message: "Internal Server Error",
-				err,
-			});
-		});
 };
+
 exports.updateUser = (req, res) => {
 	// Update hook removed we wont update the password this way
 	if ("password" in req.body) delete req.body.password;
@@ -108,11 +102,4 @@ exports.updateUser = (req, res) => {
 				message: "User Not Found",
 			});
 		})
-		.catch((err) => {
-			//Status code 500  (Internal Server Error)
-			res.status(500).json({
-				message: "Internal Server Error",
-				err,
-			});
-		});
 };

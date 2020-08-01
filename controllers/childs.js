@@ -8,7 +8,7 @@ exports.createChild = (req, res) => {
 	if (!childPath) return;
 
 	delete req.body.path;
-	Workspace.updateOne(
+	return Workspace.updateOne(
 		{ _id: req.auth.workspace },
 		{
 			$push: { [childPath]: { ...req.body, _id: target_id } },
@@ -17,34 +17,26 @@ exports.createChild = (req, res) => {
 			arrayFilters,
 			omitUndefined: true,
 		}
-	)
-		.then((result) => {
-			//Number of document modified
-			if (result.nModified > 0)
-				return res.status(200).json({
-					message: "Child added!",
-					result,
-				});
-
-			res.status(404).json({
-				message: "Not found",
+	).then((result) => {
+		//Number of document modified
+		if (result.nModified > 0)
+			return res.status(200).json({
+				message: "Child added!",
 				result,
 			});
-		})
-		.catch((err) => {
-			//Status code 500  (Internal Server Error)
-			res.status(500).json({
-				message: "Internal Server Error",
-				err,
-			});
+
+		res.status(404).json({
+			message: "Not found",
+			result,
 		});
+	});
 };
 
 exports.updateChild = (req, res) => {
 	const { $setArray, arrayFilters } = preparePath(req, res);
 	// if prepare fail we doesn't wont to run a bad querry
 	if (!$setArray) return;
-	Workspace.updateOne(
+	return Workspace.updateOne(
 		{ _id: req.auth.workspace },
 		{
 			$set: $setArray,
@@ -53,33 +45,25 @@ exports.updateChild = (req, res) => {
 			arrayFilters,
 			omitUndefined: true,
 		}
-	)
-		.then((result) => {
-			if (result.nModified > 0)
-				return res.status(202).json({
-					message: "Child updated!",
-					result,
-				});
-
-			// Accepted
-			res.status(200).json({
-				message: "Nothing to update",
+	).then((result) => {
+		if (result.nModified > 0)
+			return res.status(202).json({
+				message: "Child updated!",
 				result,
 			});
-		})
-		.catch((err) => {
-			//Status code 500  (Internal Server Error)
-			res.status(500).json({
-				message: "Internal Server Error",
-				err,
-			});
+
+		// Accepted
+		res.status(200).json({
+			message: "Nothing to update",
+			result,
 		});
+	});
 };
 
 exports.deleteChild = (req, res) => {
 	const { childPath, arrayFilters, target_id } = preparePath(req, res);
 	if (!childPath) return;
-	Workspace.updateOne(
+	return Workspace.updateOne(
 		{ _id: req.auth.workspace },
 		{
 			$pull: { [childPath]: { _id: mongoose.Types.ObjectId(target_id) } },
@@ -89,33 +73,26 @@ exports.deleteChild = (req, res) => {
 			omitUndefined: true,
 			multi: false,
 		}
-	)
-		.then((result) => {
-			//Number of document modified
-			if (result.nModified > 0)
-				return res.status(200).json({
-					message: "Child deleted",
-					result,
-				});
-
-			res.status(404).json({
-				message: "Not Found",
+	).then((result) => {
+		//Number of document modified
+		if (result.nModified > 0)
+			return res.status(200).json({
+				message: "Child deleted",
 				result,
 			});
-		})
-		.catch((err) => {
-			res.status(500).json({
-				message: "Internal Server Error",
-				err,
-			});
+
+		res.status(404).json({
+			message: "Not Found",
+			result,
 		});
+	});
 };
 
 function preparePath(req, res) {
 	const arrayIds = getPathIds(req, res);
 	if (!arrayIds) return false;
 
-	const dicReqType = { POST: "create", UPDATE: "update", DELETE: "delete" };
+	const dicReqType = { POST: "create", PUT: "update", DELETE: "delete" };
 	const operationType = dicReqType[req.method];
 
 	//Match all ids including "[" and "]" but not empty ones "[]"
@@ -166,7 +143,7 @@ function preparePath(req, res) {
 	let $setArray = {};
 	for (key in req.body) if (!Array.isArray(req.body[key])) $setArray[`${childPath}.${key}`] = req.body[key];
 
-	return { $setArray, arrayFilter };
+	return { $setArray, arrayFilters };
 }
 
 function getPathIds(req, res) {

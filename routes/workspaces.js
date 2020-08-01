@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
+const errorHandler = require("../utils/errors");
+
 const workspacesController = require("../controllers/workspaces");
 
 // Get All workspaces
@@ -8,10 +10,10 @@ const workspacesController = require("../controllers/workspaces");
 // router.get("/", workspacesController.getWorkspaces);
 
 // Get a workspace
-router.get("/", workspacesController.getWorkspace);
+router.get("/", errorHandler(workspacesController.getWorkspace));
 
 // Delete
-router.delete("/", workspacesController.deleteWorkspace);
+router.delete("/", errorHandler(workspacesController.deleteWorkspace));
 
 // We doesn't need update workspace
 

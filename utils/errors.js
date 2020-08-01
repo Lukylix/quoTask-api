@@ -1,7 +1,8 @@
 // args contain req, res, next
 const errorHandler = (ourFunction) => {
 	return (req, res, next) => {
-		return ourFunction(req, res, next).catch((err) => next(err));
+		if ("catch" in ourFunction) return ourFunction(req, res, next).catch((err) => next(err));
+		return ourFunction(req, res, next);
 	};
 };
 

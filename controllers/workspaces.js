@@ -36,7 +36,7 @@ exports.getWorkspace = (req, res) => {
 };
 
 exports.deleteWorkspace = (req, res) => {
-	Workspace.deleteOne({ _id: req.auth.workspace })
+	return Workspace.deleteOne({ _id: req.auth.workspace })
 		.then((result) => {
 			if (result.deletedCount > 0)
 				return res
@@ -49,11 +49,4 @@ exports.deleteWorkspace = (req, res) => {
 				message: "Workspace Not Found",
 			});
 		})
-		.catch((err) => {
-			//Status code 500  (Internal Server Error)
-			res.status(500).json({
-				message: "Internal Server Error",
-				err,
-			});
-		});
 };
