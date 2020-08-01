@@ -5,10 +5,6 @@ const errorHandler = require("../utils/errors");
 
 const workspacesController = require("../controllers/workspaces");
 
-// Get All workspaces
-// Not Needed only for futures admins
-// router.get("/", workspacesController.getWorkspaces);
-
 // Get a workspace
 router.get("/", errorHandler(workspacesController.getWorkspace));
 

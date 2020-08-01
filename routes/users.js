@@ -11,10 +11,6 @@ router.post("/", errorHandler(usersController.createUser));
 // Middleware auth validation
 router.use(require("../controllers/login").verify);
 
-//Get All users
-// Not Needed only for futures admins
-// router.get("/", usersController.getUsers);
-
 //Get a user
 router.get("/", errorHandler(usersController.getUser));
 

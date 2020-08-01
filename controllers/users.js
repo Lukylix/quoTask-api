@@ -33,22 +33,6 @@ exports.createUser = (req, res) => {
 		});
 };
 
-// Temporarily Disabled (see users route)
-exports.getUsers = (req, res) => {
-	User.find()
-		.then((users) => {
-			//Status code 201 (Created)
-			res.status(201).json(users);
-		})
-		.catch((err) => {
-			//Status code 500  (Internal Server Error)
-			res.status(500).json({
-				message: "Internal Server Error",
-				err,
-			});
-		});
-};
-
 exports.getUser = (req, res) => {
 	User.findById(req.auth._id)
 		.then((user) => {

@@ -1,22 +1,5 @@
 const Workspace = require("../models/Workspace").model;
 
-
-// Temporarily Disabled (see workspaces route)
-exports.getWorkspaces = (req, res) => {
-	Workspace.find()
-		.then((workspaces) => {
-			//Status code 201 (Created)
-			res.status(201).json(workspaces);
-		})
-		.catch((err) => {
-			//Status code 500  (Internal Server Error)
-			res.status(500).json({
-				message: "Internal Server Error",
-				err,
-			});
-		});
-};
-
 exports.getWorkspace = (req, res) => {
 	Workspace.findById(req.auth.workspace)
 		.then((workspace) => {
