@@ -7,6 +7,6 @@ const errorHandler = (ourFunction) => {
 
 // prevent node from crashing if async call failed
 const unhandledRejection = (reason, promise) => {
-	console.log("Unhandled Rejection at:", promise, "reason:", reason);
+	console.error("Unhandled Rejection at:", promise, "reason:", reason);
 	// TODO Store those errors somewhere
 };

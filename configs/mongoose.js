@@ -9,7 +9,7 @@ const DB = {
 	options: {
 		//Use new connection string for MongoDB driver
 		useNewUrlParser: true,
-		//Use new Server Discover and Monitorin engine
+		//Use new Server Discover and Monitoring engine
 		useUnifiedTopology: true,
 	},
 	get uri() {
