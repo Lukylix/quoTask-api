@@ -36,7 +36,7 @@ exports.createUser = (req, res) => {
 exports.getUser = (req, res) => {
 	User.findById(req.auth._id)
 		.then((user) => {
-			if (user !== null) return res.status(200).json(user).end();
+			if (user !== null) return res.status(200).json(user);
 			//Status code 404  (Not Found)
 			res.status(404).json({
 				message: "User Not Found",
@@ -80,7 +80,6 @@ exports.updateUser = (req, res) => {
 						message: "User updated!",
 						result,
 					})
-					.end();
 
 			res.status(404).json({
 				message: "User Not Found",

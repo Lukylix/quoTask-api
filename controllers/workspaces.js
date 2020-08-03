@@ -3,7 +3,7 @@ const Workspace = require("../models/Workspace").model;
 exports.getWorkspace = (req, res) => {
 	Workspace.findById(req.auth.workspace)
 		.then((workspace) => {
-			if (workspace !== null) return res.status(200).json(workspace).end();
+			if (workspace !== null) return res.status(200).json(workspace);
 			//Status code 404  (Not Found)
 			res.status(404).json({
 				message: "Workspace Not Found",
@@ -27,7 +27,7 @@ exports.deleteWorkspace = (req, res) => {
 					.json({
 						message: "Workspace Deleted!",
 					})
-					.end();
+
 			res.status(404).json({
 				message: "Workspace Not Found",
 			});
