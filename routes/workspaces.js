@@ -5,6 +5,9 @@ const errorHandler = require("../utils/errors");
 
 const workspacesController = require("../controllers/workspaces");
 
+// Middleware auth validation
+router.use(require("../controllers/login").verify);
+
 // Get a workspace
 router.get("/", errorHandler(workspacesController.getWorkspace));
 

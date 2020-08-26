@@ -5,10 +5,13 @@ const errorHandler = require("../utils/errors");
 
 const childsController = require("../controllers/childs");
 
+// Middleware auth validation
+router.use(require("../controllers/login").verify);
+
 //Create
 router.post("/", errorHandler(childsController.createChild));
 
-//Get a child
+// Get a child
 // TODO
 // router.get("/", childsController.getChild);
 

@@ -12,10 +12,9 @@ app.use((err, req, res, next) => {
 });
 
 app.get("/", (req, res) => res.status(302).json("Welcome to our api"));
+
 app.use("/login", require("./routes/login"));
 app.use("/users?", require("./routes/users"));
-
-app.use(require("./controllers/login").verify); // Middleware auth validation
 app.use("/workspaces?", require("./routes/workspaces"));
 app.use("/childs?", require("./routes/childs"));
 
