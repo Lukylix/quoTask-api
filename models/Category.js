@@ -8,23 +8,14 @@ const TaskSchema = require("./Task").schema;
 
 exports.schema = subSchemaBuilder(
 	{
-		name: {
-			type: String,
-			required: true,
-		},
+		name: { type: String, required: true },
 		color: ColorSchema,
-		//Overwrited by our custom function
-		subCategories: [this],
+		subCategories: [this], //Overwritten by our  function
 		projects: [ProjectSchema],
 		tasks: [TaskSchema],
 	},
-	//Mongoose schema options
-	{},
-	//Custom options
-	{
-		propertyName: "subCategories",
-		treeLimit: 5,
-	}
+	{}, //Mongoose schema options
+	{ propertyName: "subCategories", treeLimit: 5 } //Options for subSchemaBuilder()
 );
 
 exports.model = mongoose.model("Category", exports.schema);

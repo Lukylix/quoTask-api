@@ -5,7 +5,7 @@ const Workspace = require("../models/Workspace").model;
 const defaultWorkspace = require("../configs/UserDefault/workspace");
 
 exports.createUser = (req, res) => {
-	//Add Default Workspace if not include in req
+	//Add Default Workspace if not in req
 	if (!("workspace" in req.body)) req.body.workspace = defaultWorkspace;
 	const workspace = new Workspace({ ...req.body.workspace, _id: new mongoose.Types.ObjectId() });
 
@@ -17,19 +17,10 @@ exports.createUser = (req, res) => {
 			return user.save();
 		})
 		.then((user) => {
-			//Status code 201 (Created)
-			res.status(201).json({
-				message: "User created!",
-				user: user,
-				workspace: workspace,
-			});
+			res.status(201).json({ message: "User created!", user, workspace });
 		})
 		.catch((err) => {
-			//Status code 400 (Bad Request)
-			res.status(400).json({
-				message: "Bad request",
-				err,
-			});
+			res.status(400).json({ message: "Bad request", err });
 		});
 };
 
@@ -53,16 +44,15 @@ exports.getUser = (req, res) => {
 
 // TODO Delete the related workspace
 exports.deleteUser = (req, res) => {
-	return User.deleteOne({ _id: req.auth._id })
-		.then((result) => {
-			if (result.deletedCount > 0)
-				return res.status(200).json({
-					message: "User Deleted!",
-				});
-			res.status(404).json({
-				message: "User Not Found",
+	return User.deleteOne({ _id: req.auth._id }).then((result) => {
+		if (result.deletedCount > 0)
+			return res.status(200).json({
+				message: "User Deleted!",
 			});
-		})
+		res.status(404).json({
+			message: "User Not Found",
+		});
+	});
 };
 
 exports.updateUser = (req, res) => {
@@ -70,19 +60,16 @@ exports.updateUser = (req, res) => {
 	if ("password" in req.body) delete req.body.password;
 
 	// If this line is modified could result in bypass mongoose update hook
-	User.updateOne({ _id: req.auth._id }, req.body, { omitUndefined: true })
-		.then((result) => {
-			//Number of document modified
-			if (result.nModified > 0)
-				return res
-					.status(200)
-					.json({
-						message: "User updated!",
-						result,
-					})
-
-			res.status(404).json({
-				message: "User Not Found",
+	User.updateOne({ _id: req.auth._id }, req.body, { omitUndefined: true }).then((result) => {
+		//Number of document modified
+		if (result.nModified > 0)
+			return res.status(200).json({
+				message: "User updated!",
+				result,
 			});
-		})
+
+		res.status(404).json({
+			message: "User Not Found",
+		});
+	});
 };

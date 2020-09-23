@@ -1,13 +1,11 @@
 const mongoose = require("mongoose");
-// TODO : TypeScript typing
 
 // return a mongoose schema with is subSchemas (self reference childs)
 const subSchemaBuilder = (definition, options, { propertyName, treeLimit = 3 }) => {
 	// FIXME Doesn't respect guidelines we slove a hypotetical miss usage
 	if (!(propertyName in definition))
 		throw (
-			"You must include the Sub Property in your Schema definition \n" +
-			`propertyName parameter given: ${propertyName}`
+			"You must include the Sub Property in your Schema definition \n" + `propertyName parameter given: ${propertyName}`
 		);
 
 	let curentDefinition = definition;

@@ -4,11 +4,11 @@ const app = express();
 require("dotenv").config();
 require("./configs/mongoose");
 
-//BodyParser is include inside express by default
+//BodyParser included inside express by default
 app.use(express.json());
 app.use((err, req, res, next) => {
-	if (err) res.status(400).send({ message: "Json parsing error" });
-	next()
+	if (err) return res.status(400).send({ message: "Json parsing error" });
+	next();
 });
 
 app.get("/", (req, res) => res.status(302).json("Welcome to our api"));

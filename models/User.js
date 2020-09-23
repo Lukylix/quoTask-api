@@ -4,40 +4,29 @@ const bcrypt = require("bcrypt");
 // TODO Email verification
 const userShema = new mongoose.Schema(
 	{
-		firstname: {
-			type: String,
-			required: true,
-		},
-		lastname: {
-			type: String,
-			required: true,
-		},
-		// Need setter for lower case
+		firstname: { type: String, required: true },
+		lastname: { type: String, required: true },
 		email: {
 			type: String,
 			required: true,
-			// Mark as optional in mongoose doc but wont pick it up
-			index: true,
 			unique: true,
+			index: true, // Mark as optional in mongoose doc but wont pick it up
 			set: (v) => v.toLowerCase().trim(),
 		},
 		password: {
 			type: String,
 			required: true,
-			// Prevent Hash password from behing visible in querries by default
-			select: false,
+			select: false, // Prevent Hash password from behing visible in querries by default
 		},
-		//We doesnt need default we will do the midleware inside the controller
+		//We doesn't need default we will do the midleware inside the controller
 		workspace: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "Workspace",
 			required: true,
 		},
 	},
-	{
-		//Let moogoose manage timestamps
-		timestamps: true,
-	}
+	//Let moogoose manage timestamps
+	{ timestamps: true }
 );
 
 //Must not use arrow function so this keyword can be bound

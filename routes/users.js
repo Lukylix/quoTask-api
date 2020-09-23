@@ -2,22 +2,12 @@ const express = require("express");
 const router = express.Router();
 
 const errorHandler = require("../utils/errors");
-
 const usersController = require("../controllers/users");
 
-//Create
-router.post("/", errorHandler(usersController.createUser));
-
-// Middleware auth validation
-router.use(require("../controllers/login").verify);
-
-//Get a user
-router.get("/", errorHandler(usersController.getUser));
-
-//Delete a user
-router.delete("/", errorHandler(usersController.deleteUser));
-
-//update
-router.put("/", errorHandler(usersController.updateUser));
+router.post("/", errorHandler(usersController.createUser)); // Create a user
+router.use(require("../controllers/login").verify); // Middleware auth validation
+router.get("/", errorHandler(usersController.getUser)); // Get a user
+router.put("/", errorHandler(usersController.updateUser)); // Update a user
+router.delete("/", errorHandler(usersController.deleteUser)); // Delete a user
 
 module.exports = router;

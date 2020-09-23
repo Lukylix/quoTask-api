@@ -97,9 +97,7 @@ const dicPathExemples = {
 		path: "categories[5f16a5e17c284c5c6d9a6f95].tasks[]",
 	},
 	update: {
-		get path() {
-			return this.default.path;
-		},
+		path: "categories[].tasks[5f16a6adc048c15d3d1889df]",
 		alternative: "categories[].project[5f16a6adc048c15d3d1889df].color",
 	},
 };
@@ -227,16 +225,16 @@ function validatePathEnding(splitPath, operationType, res) {
 
 function validatePathPrecision(splitPath, operationType, res) {
 	if (!validatePathEnding(splitPath, operationType, res)) return false;
-	if (operationType == "delete") return true;
+	if (operationType === "delete") return true;
 
 	const dicStartIndex = { create: splitPath.length - 2, update: splitPath.length - 1 };
 	// Look behind to see if parent array got an id
 	let isValidPath = true;
 	for (let index = dicStartIndex[operationType]; index > 0; index--) {
-		if (splitPath[index] == "$[]") {
+		if (splitPath[index] === "$[]") {
 			isValidPath = false;
 			break;
-		} else if (splitPath[index] == "$") break;
+		} else if (splitPath[index] === "$") break;
 	}
 	if (!isValidPath) res.status(400).json(dicFailResponses.validatePathPrecision[operationType]);
 	return isValidPath;
