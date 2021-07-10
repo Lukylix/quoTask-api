@@ -38,6 +38,10 @@ Afin d'harmoniser et rendre plus lisible la lecture des commits, le projet suit 
 
 Et donc l'insatalation de [gitmoji-cli](https://github.com/carloscuesta/gitmoji-cli) afin de s'assurer que la norme soit bien suivie.
 
+## Lancement
+
+> docker-compose up -d --build
+
 # Modélisation base de données
 
 Vue d'ensemble:
